@@ -1,421 +1,460 @@
 <!DOCTYPE html>
 <html lang="ru" data-theme="light">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
-    <title>Чек-лист подбора авто</title>
-    <style>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Чек-лист подбора авто</title>
+  <style>
+    :root {
+      --bg-color: #f5f5f7;
+      --card-bg: #ffffff;
+      --text-color: #1d1d1f;
+      --text-secondary: #86868b;
+      --border-color: #d2d2d7;
+      --accent-color: #007aff;
+      --accent-text: #ffffff;
+      --danger-color: #ff3b30;
+      --success-color: #34c759;
+      --warning-color: #ff9500;
+      --safe-top: env(safe-area-inset-top, 20px);
+      --safe-bottom: env(safe-area-inset-bottom, 20px);
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #000000;
+      --card-bg: #1c1c1e;
+      --text-color: #f5f5f7;
+      --text-secondary: #98989d;
+      --border-color: #38383a;
+      --accent-color: #0a84ff;
+    }
+
+    [data-theme="contrast"] {
+      --bg-color: #000000;
+      --card-bg: #000000;
+      --text-color: #ffffff;
+      --text-secondary: #ffff00;
+      --border-color: #ffffff;
+      --accent-color: #ffff00;
+      --accent-text: #000000;
+      --danger-color: #ff0000;
+      --success-color: #00ff00;
+      --warning-color: #ffff00;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: max(var(--safe-top), 24px) 12px calc(12px + var(--safe-bottom)) 12px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    h2 {
+      font-size: 17px;
+      margin: 0 0 8px 0;
+      font-weight: 600;
+      color: var(--accent-color);
+    }
+
+    .theme-switcher {
+      display: flex;
+      gap: 8px;
+    }
+
+    .theme-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .theme-btn.active {
+      background: var(--accent-color);
+      border-color: var(--accent-color);
+      transform: scale(1.05);
+    }
+
+    .section {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-color);
+      font-size: 16px;
+      font-family: inherit;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: var(--bg-color);
+      border-radius: 8px;
+      border: 1px solid transparent;
+    }
+
+    .checkbox-group:has(input:checked) {
+      border-color: var(--accent-color);
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      margin-right: 10px;
+      margin-top: 2px;
+      flex-shrink: 0;
+      accent-color: var(--accent-color);
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-color);
+      cursor: pointer;
+      line-height: 1.3;
+      flex: 1;
+    }
+
+    .block-comment {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    .photo-area {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .photo-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px;
+      background: var(--bg-color);
+      border: 1px dashed var(--border-color);
+      border-radius: 8px;
+      color: var(--accent-color);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .photo-preview {
+      width: 100%;
+      max-height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .remove-photo {
+      align-self: flex-end;
+      font-size: 12px;
+      color: var(--danger-color);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .score-container {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 2px solid var(--border-color);
+      text-align: center;
+    }
+
+    .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 8px solid var(--accent-color);
+      background: var(--bg-color);
+    }
+
+    .score-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-color);
+      line-height: 1;
+    }
+
+    .score-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .score-category {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .score-breakdown {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: left;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .score-breakdown div {
+      margin: 4px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .red-flag {
+      color: var(--danger-color);
+      font-weight: 600;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background-color: var(--accent-color);
+      color: var(--accent-text);
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .btn-secondary {
+      background-color: var(--card-bg);
+      color: var(--accent-color);
+      border: 1px solid var(--accent-color);
+    }
+
+    #result {
+      display: none;
+      background: var(--card-bg);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      margin-top: 16px;
+    }
+
+    .report-line {
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .report-label {
+      color: var(--text-secondary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .report-value {
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .report-photo {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-top: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .report-link {
+      color: var(--accent-color);
+      word-break: break-all;
+      font-size: 13px;
+    }
+
+    .source-note {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 20px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-color);
+      line-height: 1.4;
+    }
+
+    .source-note a {
+      color: var(--accent-color);
+      text-decoration: none;
+    }
+
+    /* ПЕЧАТЬ: Оптимизация для высокой контрастности на бумаге */
+    @media print {
+
+      /* Переопределяем переменные: серый становится черным, цвета — темнее для четкой печати */
       :root {
-        --bg-color: #f5f5f7;
-        --card-bg: #ffffff;
-        --text-color: #1d1d1f;
-        --text-secondary: #86868b;
-        --border-color: #d2d2d7;
-        --accent-color: #007aff;
-        --accent-text: #ffffff;
-        --danger-color: #ff3b30;
-        --success-color: #34c759;
-        --warning-color: #ff9500;
-        --safe-top: env(safe-area-inset-top, 20px);
-        --safe-bottom: env(safe-area-inset-bottom, 20px);
+        --text-secondary: #000000 !important;
+        --text-color: #000000 !important;
+        --danger-color: #b30000 !important;
+        /* Темно-красный для печати */
+        --success-color: #006600 !important;
+        /* Темно-зеленый для печати */
+        --warning-color: #995700 !important;
+        /* Темно-оранжевый для печати */
+        --accent-color: #0000cc !important;
+        /* Темно-синий для ссылок */
       }
 
-      [data-theme="dark"] {
-        --bg-color: #000000;
-        --card-bg: #1c1c1e;
-        --text-color: #f5f5f7;
-        --text-secondary: #98989d;
-        --border-color: #38383a;
-        --accent-color: #0a84ff;
+      body * {
+        visibility: hidden;
       }
 
-      [data-theme="contrast"] {
-        --bg-color: #000000;
-        --card-bg: #000000;
-        --text-color: #ffffff;
-        --text-secondary: #ffff00;
-        --border-color: #ffffff;
-        --accent-color: #ffff00;
-        --accent-text: #000000;
-        --danger-color: #ff0000;
-        --success-color: #00ff00;
-        --warning-color: #ffff00;
-      }
-
-      * {
-        box-sizing: border-box;
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-color);
-        margin: 0;
-        padding: max(var(--safe-top), 24px) 12px calc(12px + var(--safe-bottom))
-          12px;
-        font-size: 15px;
-        line-height: 1.4;
-      }
-
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 16px;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--border-color);
-      }
-
-      h1 {
-        font-size: 20px;
-        margin: 0;
-        font-weight: 600;
-      }
-      h2 {
-        font-size: 17px;
-        margin: 0 0 8px 0;
-        font-weight: 600;
-        color: var(--accent-color);
-      }
-
-      .theme-switcher {
-        display: flex;
-        gap: 8px;
-      }
-      .theme-btn {
-        background: var(--card-bg);
-        border: 1px solid var(--border-color);
-        color: var(--text-color);
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        font-size: 20px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s ease;
-      }
-      .theme-btn.active {
-        background: var(--accent-color);
-        border-color: var(--accent-color);
-        transform: scale(1.05);
-      }
-
-      .section {
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 12px;
-        margin-bottom: 12px;
-        border: 1px solid var(--border-color);
-      }
-
-      .form-group {
-        margin-bottom: 10px;
-      }
-      .form-group:last-child {
-        margin-bottom: 0;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 4px;
-        font-size: 13px;
-        color: var(--text-secondary);
-        font-weight: 500;
-      }
-
-      input[type="text"],
-      input[type="number"],
-      input[type="url"],
-      textarea,
-      select {
-        width: 100%;
-        padding: 10px;
-        background: var(--bg-color);
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        color: var(--text-color);
-        font-size: 16px;
-        font-family: inherit;
-      }
-      input:focus,
-      textarea:focus,
-      select:focus {
-        outline: none;
-        border-color: var(--accent-color);
-      }
-
-      .checkbox-group {
-        display: flex;
-        align-items: flex-start;
-        margin-bottom: 10px;
-        padding: 10px;
-        background: var(--bg-color);
-        border-radius: 8px;
-        border: 1px solid transparent;
-      }
-      .checkbox-group:has(input:checked) {
-        border-color: var(--accent-color);
-      }
-      .checkbox-group input[type="checkbox"] {
-        width: 22px;
-        height: 22px;
-        margin-right: 10px;
-        margin-top: 2px;
-        flex-shrink: 0;
-        accent-color: var(--accent-color);
-        cursor: pointer;
-      }
-      .checkbox-group label {
-        margin: 0;
-        font-size: 14px;
-        color: var(--text-color);
-        cursor: pointer;
-        line-height: 1.3;
-        flex: 1;
-      }
-
-      .block-comment {
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px dashed var(--border-color);
-      }
-
-      .photo-area {
-        margin-top: 10px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .photo-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        padding: 10px;
-        background: var(--bg-color);
-        border: 1px dashed var(--border-color);
-        border-radius: 8px;
-        color: var(--accent-color);
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-      }
-      .photo-preview {
-        width: 100%;
-        max-height: 200px;
-        object-fit: cover;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-      }
-      .remove-photo {
-        align-self: flex-end;
-        font-size: 12px;
-        color: var(--danger-color);
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 4px;
-      }
-
-      .score-container {
-        background: var(--card-bg);
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 16px;
-        border: 2px solid var(--border-color);
-        text-align: center;
-      }
-      .score-circle {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        margin: 0 auto 12px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border: 8px solid var(--accent-color);
-        background: var(--bg-color);
-      }
-      .score-value {
-        font-size: 36px;
-        font-weight: 700;
-        color: var(--text-color);
-        line-height: 1;
-      }
-      .score-label {
-        font-size: 12px;
-        color: var(--text-secondary);
-        margin-top: 4px;
-      }
-      .score-category {
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 8px;
-      }
-      .score-breakdown {
-        font-size: 13px;
-        color: var(--text-secondary);
-        text-align: left;
-        margin-top: 12px;
-        padding-top: 12px;
-        border-top: 1px solid var(--border-color);
-      }
-      .score-breakdown div {
-        margin: 4px 0;
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .red-flag {
-        color: var(--danger-color);
-        font-weight: 600;
-      }
-
-      .btn {
-        display: block;
-        width: 100%;
-        padding: 14px;
-        background-color: var(--accent-color);
-        color: var(--accent-text);
-        border: none;
-        border-radius: 10px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        margin-top: 8px;
-        text-align: center;
-      }
-      .btn-secondary {
-        background-color: var(--card-bg);
-        color: var(--accent-color);
-        border: 1px solid var(--accent-color);
+      #result,
+      #result * {
+        visibility: visible;
       }
 
       #result {
-        display: none;
-        background: var(--card-bg);
-        padding: 16px;
-        border-radius: 12px;
-        border: 1px solid var(--border-color);
-        margin-top: 16px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+        border: none;
+        box-shadow: none;
+        background: #fff !important;
+        color: #000 !important;
+        display: block !important;
       }
 
+      /* Принудительная печать цветов фона и текста (для Safari/Chrome) */
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      /* Дополнительные гарантии для ключевых текстовых элементов */
+      .report-label,
+      .score-label,
+      .score-breakdown,
+      .source-note,
       .report-line {
-        margin-bottom: 6px;
-        font-size: 14px;
+        color: #000000 !important;
       }
-      .report-label {
-        color: var(--text-secondary);
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 600;
-      }
-      .report-value {
-        font-weight: 500;
-        margin-bottom: 10px;
-      }
+
       .report-photo {
+        page-break-inside: avoid;
         max-width: 100%;
-        border-radius: 8px;
-        margin-top: 6px;
-        border: 1px solid var(--border-color);
-      }
-      .report-link {
-        color: var(--accent-color);
-        word-break: break-all;
-        font-size: 13px;
       }
 
-      .source-note {
-        font-size: 11px;
-        color: var(--text-secondary);
-        margin-top: 20px;
-        padding-top: 12px;
-        border-top: 1px solid var(--border-color);
-        line-height: 1.4;
+      .no-print {
+        display: none !important;
       }
-      .source-note a {
-        color: var(--accent-color);
-        text-decoration: none;
-      }
+    }
+  </style>
+</head>
 
-      /* ПЕЧАТЬ: Скрываем ВСЁ, кроме итогового отчета */
-      @media print {
-        body * {
-          visibility: hidden;
-        }
-        #result,
-        #result * {
-          visibility: visible;
-        }
-        #result {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          margin: 0;
-          padding: 10px;
-          border: none;
-          box-shadow: none;
-          background: #fff;
-          color: #000;
-          display: block !important;
-        }
-        .report-photo {
-          page-break-inside: avoid;
-          max-width: 100%;
-        }
-        .no-print {
-          display: none !important;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <header class="no-print">
-      <h1>🚗 Автоподбор</h1>
-      <div class="theme-switcher">
-        <button
-          class="theme-btn active"
-          onclick="setTheme('light', this)"
-          title="Светлая тема"
-        >
-          ☀️
-        </button>
-        <button
-          class="theme-btn"
-          onclick="setTheme('dark', this)"
-          title="Темная тема"
-        >
-          🌙
-        </button>
-        <button
-          class="theme-btn"
-          onclick="setTheme('contrast', this)"
-          title="Контрастная тема"
-        >
-          🌗
-        </button>
-      </div>
-    </header>
+<body>
+  <header class="no-print">
+    <h1>🚗 Автоподбор</h1>
+    <div class="theme-switcher">
+      <button class="theme-btn active" onclick="setTheme('light', this)" title="Светлая тема">
+        ☀️
+      </button>
+      <button class="theme-btn" onclick="setTheme('dark', this)" title="Темная тема">
+        🌙
+      </button>
+      <button class="theme-btn" onclick="setTheme('contrast', this)" title="Контрастная тема">
+        🌗
+      </button>
+    </div>
+  </header>
 
-    <div
-      class="no-print"
-      style="
+  <div class="no-print" style="
         background: var(--warning-color);
         color: #000;
         padding: 10px;
@@ -423,267 +462,234 @@
         font-size: 13px;
         margin-bottom: 12px;
         font-weight: 500;
-      "
-    >
-      ⚠️ <strong>Внимание:</strong> Фотографии хранятся только в памяти этой
-      вкладки. Не перезагружайте страницу до сохранения отчета (PDF или
-      скриншот), иначе фото будут утеряны.
+      ">
+    ⚠️ <strong>Внимание:</strong> Фотографии хранятся только в памяти этой
+    вкладки. Не перезагружайте страницу до сохранения отчета (PDF или
+    скриншот), иначе фото будут утеряны.
+  </div>
+
+  <div class="section">
+    <h2>Объект осмотра</h2>
+    <div class="form-group">
+      <label>Марка и Модель:</label><input type="text" id="carModel" placeholder="Например: Toyota Camry" />
     </div>
-
-    <div class="section">
-      <h2>Объект осмотра</h2>
-      <div class="form-group">
-        <label>Марка и Модель:</label
-        ><input
-          type="text"
-          id="carModel"
-          placeholder="Например: Toyota Camry"
-        />
-      </div>
-      <div class="form-group">
-        <label>Год выпуска:</label
-        ><input type="text" id="carYear" placeholder="2018" />
-      </div>
-      <div class="form-group">
-        <label>VIN / Номер кузова:</label><input type="text" id="carVin" />
-      </div>
-      <div class="form-group">
-        <label>Ссылка на объявление:</label
-        ><input
-          type="url"
-          id="adUrl"
-          placeholder="https://avito.ru/... или https://auto.ru/..."
-        />
-      </div>
-      <div class="form-group">
-        <label>Рыночная стоимость (₽):</label
-        ><input type="number" id="marketPrice" />
-      </div>
-      <div class="form-group">
-        <label>Запрашиваемая цена (₽):</label
-        ><input type="number" id="askedPrice" />
-      </div>
+    <div class="form-group">
+      <label>Год выпуска:</label><input type="text" id="carYear" placeholder="2018" />
     </div>
-
-    <!-- Генерация блоков 1-6 -->
-    <div id="blocks-container"></div>
-
-    <div class="section">
-      <h2 class="red-flag">🚩 КРИТИЧЕСКИЕ ДЕФЕКТЫ (КРАСНЫЕ ФЛАГИ)</h2>
-      <p style="font-size: 13px; margin-top: 0; color: var(--text-secondary)">
-        Отметьте, если обнаружено (любой пункт — основание для отказа или
-        серьезного торга):
-      </p>
-      <div class="checkbox-group">
-        <input type="checkbox" id="rf1" /><label for="rf1"
-          >Силовой каркас: следы сварки, трещины или нарушенная геометрия
-          стоек/лонжеронов.</label
-        >
-      </div>
-      <div class="checkbox-group">
-        <input type="checkbox" id="rf2" /><label for="rf2"
-          >Двигатель: эмульсия в масле, сизый дым, сильный картерный газ,
-          металлические стуки.</label
-        >
-      </div>
-      <div class="checkbox-group">
-        <input type="checkbox" id="rf3" /><label for="rf3"
-          >Юридическая чистота: перебитый VIN, ПТС-дубликат "взамен утерянного"
-          у не-собственника, авто в залоге.</label
-        >
-      </div>
-      <div class="checkbox-group">
-        <input type="checkbox" id="rf4" /><label for="rf4"
-          >Коробка передач: удары при переключении, запах гари масла АКПП,
-          стружка на щупе.</label
-        >
-      </div>
-      <div class="checkbox-group">
-        <input type="checkbox" id="rf5" /><label for="rf5"
-          >Скрученный пробег: расхождение в блоках ABS/АКПП на 30%+ без
-          подтвержденной истории ремонта.</label
-        >
-      </div>
+    <div class="form-group">
+      <label>VIN / Номер кузова:</label><input type="text" id="carVin" />
     </div>
-
-    <div class="section">
-      <h2>Итоговая рекомендация</h2>
-      <div class="form-group">
-        <label>Выявленные критические дефекты:</label
-        ><textarea id="critDefects" rows="2"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Выявленные незначительные дефекты (требующие вложений):</label
-        ><textarea id="minorDefects" rows="2"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Финальный вердикт:</label>
-        <select id="verdict">
-          <option value="Не выбрано">-- Выберите вариант --</option>
-          <option
-            value="ПРИНЯТЬ РЕШЕНИЕ О ПОКУПКЕ после устранения неисправностей и снижения цены"
-          >
-            ПРИНЯТЬ РЕШЕНИЕ О ПОКУПКЕ после устранения неисправностей и снижения
-            цены
-          </option>
-          <option
-            value="ТОРГОВАТЬСЯ ДАЛЕЕ, дефекты не критичны, но требуют пересмотра бюджета"
-          >
-            ТОРГОВАТЬСЯ ДАЛЕЕ, дефекты не критичны, но требуют пересмотра
-            бюджета
-          </option>
-          <option
-            value="НЕ РЕКОМЕНДОВАН К ПОКУПКЕ (критические дефекты / юридические риски)"
-          >
-            НЕ РЕКОМЕНДОВАН К ПОКУПКЕ (критические дефекты / юридические риски)
-          </option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Целевая цена после торга (₽):</label
-        ><input type="number" id="targetPrice" />
-      </div>
+    <div class="form-group">
+      <label>Ссылка на объявление:</label><input type="url" id="adUrl"
+        placeholder="https://avito.ru/... или https://auto.ru/..." />
     </div>
-
-    <div class="no-print">
-      <button class="btn" onclick="generateReport()">
-        📊 Сформировать отчет с оценкой
-      </button>
-      <button class="btn btn-secondary" onclick="window.print()">
-        🖨️ Печать / Сохранить в PDF
-      </button>
+    <div class="form-group">
+      <label>Рыночная стоимость (₽):</label><input type="number" id="marketPrice" />
     </div>
-
-    <div id="result" class="section">
-      <h2>Итоговый отчет</h2>
-      <div id="reportContent"></div>
+    <div class="form-group">
+      <label>Запрашиваемая цена (₽):</label><input type="number" id="askedPrice" />
     </div>
+  </div>
 
-    <div class="source-note">
-      <strong>Источники и методология:</strong> Данный чек-лист сформирован
-      исключительно на основе предоставленного документа «qwen-автоподбор.md».
-      Упомянутые официальные источники для самостоятельной проверки:
-      <ul style="padding-left: 20px; margin: 6px 0">
-        <li>
-          ГИБДД РФ (проверка ДТП, владельцев, запретов):
-          <a href="https://гибдд.рф" target="_blank">гибдд.рф</a>
-        </li>
-        <li>
-          ФССП (проверка продавца на долги):
-          <a href="https://fssp.gov.ru" target="_blank">fssp.gov.ru</a>
-        </li>
-        <li>
-          Реестр уведомлений о залоге движимого имущества (ФНП):
-          <a href="https://reestr-zalogov.ru" target="_blank"
-            >reestr-zalogov.ru</a
-          >
-        </li>
-      </ul>
-      Числовые значения (толщина ЛКП 80–150 мкм, японцы 90–110 мкм, VAG 120–150
-      мкм, вторичный окрас от 180 мкм, шпаклевка от 300-400 мкм) взяты из
-      раздела 4 предоставленного конспекта, основанного на справочных таблицах
-      толщиномеров (например, ЕТ111).<br /><br />
-      <strong>Система оценки:</strong> База: 28 пунктов чек-листа × 3.57 балла =
-      100 баллов. Каждый красный флаг: -20 баллов. Оценка 85+ = отлично, 70-84 =
-      хорошо, 50-69 = удовлетворительно, &lt;50 = плохо. Любой красный флаг =
-      автоматическая рекомендация "Не рекомендовано".
+  <!-- Генерация блоков 1-6 -->
+  <div id="blocks-container"></div>
+
+  <div class="section">
+    <h2 class="red-flag">🚩 КРИТИЧЕСКИЕ ДЕФЕКТЫ (КРАСНЫЕ ФЛАГИ)</h2>
+    <p style="font-size: 13px; margin-top: 0; color: var(--text-secondary)">
+      Отметьте, если обнаружено (любой пункт — основание для отказа или
+      серьезного торга):
+    </p>
+    <div class="checkbox-group">
+      <input type="checkbox" id="rf1" /><label for="rf1">Силовой каркас: следы сварки, трещины или нарушенная геометрия
+        стоек/лонжеронов.</label>
     </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="rf2" /><label for="rf2">Двигатель: эмульсия в масле, сизый дым, сильный картерный газ,
+        металлические стуки.</label>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="rf3" /><label for="rf3">Юридическая чистота: перебитый VIN, ПТС-дубликат "взамен
+        утерянного"
+        у не-собственника, авто в залоге.</label>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="rf4" /><label for="rf4">Коробка передач: удары при переключении, запах гари масла АКПП,
+        стружка на щупе.</label>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="rf5" /><label for="rf5">Скрученный пробег: расхождение в блоках ABS/АКПП на 30%+ без
+        подтвержденной истории ремонта.</label>
+    </div>
+  </div>
 
-    <script>
-      // Данные блоков (строго из qwen-автоподбор.md)
-      const blocksData = [
-        {
-          id: 1,
-          title: "Блок 1. Встреча и Документы",
-          placeholder: "Заметки по документам и встрече...",
-          items: [
-            "1.1. Освещенность места осмотра достаточна (солнечный день / яркий свет)",
-            "1.2. ПТС/СТС на руках. VIN в ПТС совпадает с VIN в объявлении и отчете",
-            "1.3. ПТС оригинальный (или дубликат «в связи с окончанием места»)",
-            "1.4. Паспорт продавца совпадает с собственником в ПТС",
-            "1.5. Проверка продавца по ФССП (нет критических долгов и запретов)",
-          ],
-        },
-        {
-          id: 2,
-          title: "Блок 2. Кузов и Внешний осмотр",
-          placeholder: "Заметки по кузову и ЛКП...",
-          items: [
-            "2.1. Зазоры между кузовными панелями равномерные, нет перепадов цвета",
-            "2.2. Маркировка всех стекол совпадает по году и логотипу",
-            "2.3. Толщина ЛКП по кузову в пределах 80-150 мкм (нет вторичных окрасов)",
-            "2.4. Болты крепления капота, крыльев, дверей не крашены, имеют заводские метки",
-            "2.5. Подкапотное пространство: стаканы, лонжероны без следов сварки и деформаций",
-            "2.6. Осмотр днища (на яме/подъемнике): нет кустарного антикора, битума, гнили",
-          ],
-        },
-        {
-          id: 3,
-          title: "Блок 3. Двигатель и Технические жидкости",
-          placeholder: "Заметки по двигателю и жидкостям...",
-          items: [
-            "3.1. Двигатель остывший («холодный»). Запуск прошел штатно, без стуков",
-            "3.2. Под капотом сухо. Нет следов герметика на стыках агрегатов",
-            "3.3. Масляный щуп: масло не черное, без запаха гари",
-            "3.4. Под маслозаливной горловиной и на щупе нет рыжей эмульсии (пены)",
-            "3.5. Антифриз чистый, без масляной пленки, уровень в норме",
-            "3.6. Патрубки эластичные, на заводских хомутах, без трещин",
-          ],
-        },
-        {
-          id: 4,
-          title: "Блок 4. Электроника и OBD-диагностика",
-          placeholder: "Заметки по электронике и сканеру...",
-          items: [
-            "4.1. OBD-сканер подключился, VIN в блоках совпадает с кузовным",
-            "4.2. Пробег в блоках ABS/АКПП совпадает с пробегом на щитке (нет скрутки)",
-            "4.3. Отсутствуют критические ошибки (Check Engine, подушки безопасности)",
-            "4.4. Работают все стеклоподъемники, кондиционер, свет, климат-контроль",
-          ],
-        },
-        {
-          id: 5,
-          title: "Блок 5. Тест-драйв и Ходовая часть",
-          placeholder: "Заметки по тест-драйву и ходовой...",
-          items: [
-            "5.1. При разгоне и торможении АКПП/МКПП работает без рывков и хрустов",
-            "5.2. На скорости 100-110 км/ч машину не тянет в сторону, нет вибрации",
-            "5.3. При проезде неровностей в подвеске нет глухих стуков и скрипов",
-            "5.4. Рулевое колесо без люфта, при поворотах нет хруста (ШРУСы/рейка)",
-            "5.5. Тормоза схватывают равномерно, нет биения педали",
-          ],
-        },
-        {
-          id: 6,
-          title: "Блок 6. Салон",
-          placeholder: "Заметки по салону...",
-          items: [
-            "6.1. Состояние руля и педалей соответствует заявленному пробегу",
-            "6.2. В салоне нет запаха сырости, плесени или резкого запаха «химии» (утоп)",
-          ],
-        },
-      ];
+  <div class="section">
+    <h2>Итоговая рекомендация</h2>
+    <div class="form-group">
+      <label>Выявленные критические дефекты:</label><textarea id="critDefects" rows="2"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Выявленные незначительные дефекты (требующие вложений):</label><textarea id="minorDefects"
+        rows="2"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Финальный вердикт:</label>
+      <select id="verdict">
+        <option value="Не выбрано">-- Выберите вариант --</option>
+        <option value="ПРИНЯТЬ РЕШЕНИЕ О ПОКУПКЕ после устранения неисправностей и снижения цены">
+          ПРИНЯТЬ РЕШЕНИЕ О ПОКУПКЕ после устранения неисправностей и снижения
+          цены
+        </option>
+        <option value="ТОРГОВАТЬСЯ ДАЛЕЕ, дефекты не критичны, но требуют пересмотра бюджета">
+          ТОРГОВАТЬСЯ ДАЛЕЕ, дефекты не критичны, но требуют пересмотра
+          бюджета
+        </option>
+        <option value="НЕ РЕКОМЕНДОВАН К ПОКУПКЕ (критические дефекты / юридические риски)">
+          НЕ РЕКОМЕНДОВАН К ПОКУПКЕ (критические дефекты / юридические риски)
+        </option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Целевая цена после торга (₽):</label><input type="number" id="targetPrice" />
+    </div>
+  </div>
 
-      // Хранилище фотографий в памяти сессии
-      window.blockPhotos = {};
+  <div class="no-print">
+    <button class="btn" onclick="generateReport()">
+      📊 Сформировать отчет с оценкой
+    </button>
+    <button class="btn btn-secondary" onclick="window.print()">
+      🖨️ Печать / Сохранить в PDF
+    </button>
+  </div>
 
-      // Рендеринг блоков с гарантированно уникальными ID
-      const container = document.getElementById("blocks-container");
-      blocksData.forEach((block, blockIndex) => {
-        let itemsHtml = block.items
-          .map((item, itemIndex) => {
-            // Уникальный ID вида: chk_b1_i0, chk_b1_i1 и т.д.
-            const uniqueId = `chk_b${block.id}_i${itemIndex}`;
-            return `
+  <div id="result" class="section">
+    <h2>Итоговый отчет</h2>
+    <div id="reportContent"></div>
+  </div>
+
+  <div class="source-note">
+    <strong>Источники и методология:</strong> Данный чек-лист сформирован
+    исключительно на основе предоставленного документа «qwen-автоподбор.md».
+    Упомянутые официальные источники для самостоятельной проверки:
+    <ul style="padding-left: 20px; margin: 6px 0">
+      <li>
+        ГИБДД РФ (проверка ДТП, владельцев, запретов):
+        <a href="https://гибдд.рф" target="_blank">гибдд.рф</a>
+      </li>
+      <li>
+        ФССП (проверка продавца на долги):
+        <a href="https://fssp.gov.ru" target="_blank">fssp.gov.ru</a>
+      </li>
+      <li>
+        Реестр уведомлений о залоге движимого имущества (ФНП):
+        <a href="https://reestr-zalogov.ru" target="_blank">reestr-zalogov.ru</a>
+      </li>
+    </ul>
+    Числовые значения (толщина ЛКП 80–150 мкм, японцы 90–110 мкм, VAG 120–150
+    мкм, вторичный окрас от 180 мкм, шпаклевка от 300-400 мкм) взяты из
+    раздела 4 предоставленного конспекта, основанного на справочных таблицах
+    толщиномеров (например, ЕТ111).<br /><br />
+    <strong>Система оценки:</strong> База: 28 пунктов чек-листа × 3.57 балла =
+    100 баллов. Каждый красный флаг: -20 баллов. Оценка 85+ = отлично, 70-84 =
+    хорошо, 50-69 = удовлетворительно, &lt;50 = плохо. Любой красный флаг =
+    автоматическая рекомендация "Не рекомендовано".
+  </div>
+
+  <script>
+    // Данные блоков (строго из qwen-автоподбор.md)
+    const blocksData = [
+      {
+        id: 1,
+        title: "Блок 1. Встреча и Документы",
+        placeholder: "Заметки по документам и встрече...",
+        items: [
+          "1.1. Освещенность места осмотра достаточна (солнечный день / яркий свет)",
+          "1.2. ПТС/СТС на руках. VIN в ПТС совпадает с VIN в объявлении и отчете",
+          "1.3. ПТС оригинальный (или дубликат «в связи с окончанием места»)",
+          "1.4. Паспорт продавца совпадает с собственником в ПТС",
+          "1.5. Проверка продавца по ФССП (нет критических долгов и запретов)",
+        ],
+      },
+      {
+        id: 2,
+        title: "Блок 2. Кузов и Внешний осмотр",
+        placeholder: "Заметки по кузову и ЛКП...",
+        items: [
+          "2.1. Зазоры между кузовными панелями равномерные, нет перепадов цвета",
+          "2.2. Маркировка всех стекол совпадает по году и логотипу",
+          "2.3. Толщина ЛКП по кузову в пределах 80-150 мкм (нет вторичных окрасов)",
+          "2.4. Болты крепления капота, крыльев, дверей не крашены, имеют заводские метки",
+          "2.5. Подкапотное пространство: стаканы, лонжероны без следов сварки и деформаций",
+          "2.6. Осмотр днища (на яме/подъемнике): нет кустарного антикора, битума, гнили",
+        ],
+      },
+      {
+        id: 3,
+        title: "Блок 3. Двигатель и Технические жидкости",
+        placeholder: "Заметки по двигателю и жидкостям...",
+        items: [
+          "3.1. Двигатель остывший («холодный»). Запуск прошел штатно, без стуков",
+          "3.2. Под капотом сухо. Нет следов герметика на стыках агрегатов",
+          "3.3. Масляный щуп: масло не черное, без запаха гари",
+          "3.4. Под маслозаливной горловиной и на щупе нет рыжей эмульсии (пены)",
+          "3.5. Антифриз чистый, без масляной пленки, уровень в норме",
+          "3.6. Патрубки эластичные, на заводских хомутах, без трещин",
+        ],
+      },
+      {
+        id: 4,
+        title: "Блок 4. Электроника и OBD-диагностика",
+        placeholder: "Заметки по электронике и сканеру...",
+        items: [
+          "4.1. OBD-сканер подключился, VIN в блоках совпадает с кузовным",
+          "4.2. Пробег в блоках ABS/АКПП совпадает с пробегом на щитке (нет скрутки)",
+          "4.3. Отсутствуют критические ошибки (Check Engine, подушки безопасности)",
+          "4.4. Работают все стеклоподъемники, кондиционер, свет, климат-контроль",
+        ],
+      },
+      {
+        id: 5,
+        title: "Блок 5. Тест-драйв и Ходовая часть",
+        placeholder: "Заметки по тест-драйву и ходовой...",
+        items: [
+          "5.1. При разгоне и торможении АКПП/МКПП работает без рывков и хрустов",
+          "5.2. На скорости 100-110 км/ч машину не тянет в сторону, нет вибрации",
+          "5.3. При проезде неровностей в подвеске нет глухих стуков и скрипов",
+          "5.4. Рулевое колесо без люфта, при поворотах нет хруста (ШРУСы/рейка)",
+          "5.5. Тормоза схватывают равномерно, нет биения педали",
+        ],
+      },
+      {
+        id: 6,
+        title: "Блок 6. Салон",
+        placeholder: "Заметки по салону...",
+        items: [
+          "6.1. Состояние руля и педалей соответствует заявленному пробегу",
+          "6.2. В салоне нет запаха сырости, плесени или резкого запаха «химии» (утоп)",
+        ],
+      },
+    ];
+
+    // Хранилище фотографий в памяти сессии
+    window.blockPhotos = {};
+
+    // Рендеринг блоков с гарантированно уникальными ID
+    const container = document.getElementById("blocks-container");
+    blocksData.forEach((block, blockIndex) => {
+      let itemsHtml = block.items
+        .map((item, itemIndex) => {
+          const uniqueId = `chk_b${block.id}_i${itemIndex}`;
+          return `
                 <div class="checkbox-group">
                     <input type="checkbox" id="${uniqueId}" data-block="${block.id}">
                     <label for="${uniqueId}">${item}</label>
                 </div>
             `;
-          })
-          .join("");
+        })
+        .join("");
 
-        container.innerHTML += `
+      container.innerHTML += `
                 <div class="section">
                     <h2>${block.title}</h2>
                     ${itemsHtml}
@@ -702,177 +708,177 @@
                     </div>
                 </div>
             `;
-      });
+    });
 
-      // Обработка и сжатие фото
-      function handlePhoto(input, blockId) {
-        const file = input.files[0];
-        if (!file) return;
+    // Обработка и сжатие фото
+    function handlePhoto(input, blockId) {
+      const file = input.files[0];
+      if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = new Image();
-          img.onload = function () {
-            const canvas = document.createElement("canvas");
-            const MAX_WIDTH = 800;
-            const scaleSize = MAX_WIDTH / img.width;
-            canvas.width = MAX_WIDTH;
-            canvas.height = img.height * scaleSize;
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 800;
+          const scaleSize = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scaleSize;
 
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-            const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
-            window.blockPhotos[blockId] = compressedDataUrl;
+          const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.7);
+          window.blockPhotos[blockId] = compressedDataUrl;
 
-            const previewDiv = document.getElementById(
-              `photo_preview_${blockId}`,
-            );
-            previewDiv.innerHTML = `
+          const previewDiv = document.getElementById(
+            `photo_preview_${blockId}`,
+          );
+          previewDiv.innerHTML = `
                         <img src="${compressedDataUrl}" class="photo-preview">
                         <button class="remove-photo no-print" onclick="removePhoto(${blockId})">❌ Удалить фото</button>
                     `;
-          };
-          img.src = e.target.result;
         };
-        reader.readAsDataURL(file);
-      }
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
 
-      function removePhoto(blockId) {
-        delete window.blockPhotos[blockId];
-        document.getElementById(`photo_preview_${blockId}`).innerHTML = "";
-        document.getElementById(`photo_input_${blockId}`).value = "";
-      }
+    function removePhoto(blockId) {
+      delete window.blockPhotos[blockId];
+      document.getElementById(`photo_preview_${blockId}`).innerHTML = "";
+      document.getElementById(`photo_input_${blockId}`).value = "";
+    }
 
-      // Расчет оценки
-      function calculateScore() {
-        let totalItems = 0;
-        let checkedItems = 0;
+    // Расчет оценки
+    function calculateScore() {
+      let totalItems = 0;
+      let checkedItems = 0;
 
-        blocksData.forEach((block, blockIndex) => {
-          block.items.forEach((item, itemIndex) => {
-            const uniqueId = `chk_b${block.id}_i${itemIndex}`;
-            const checkbox = document.getElementById(uniqueId);
-            if (checkbox) {
-              totalItems++;
-              if (checkbox.checked) checkedItems++;
-            }
-          });
-        });
-
-        let redFlagsCount = 0;
-        for (let i = 1; i <= 5; i++) {
-          if (document.getElementById("rf" + i).checked) {
-            redFlagsCount++;
+      blocksData.forEach((block, blockIndex) => {
+        block.items.forEach((item, itemIndex) => {
+          const uniqueId = `chk_b${block.id}_i${itemIndex}`;
+          const checkbox = document.getElementById(uniqueId);
+          if (checkbox) {
+            totalItems++;
+            if (checkbox.checked) checkedItems++;
           }
-        }
-
-        const baseScore =
-          totalItems > 0 ? (checkedItems / totalItems) * 100 : 0;
-        const penalty = redFlagsCount * 20;
-        let finalScore = Math.max(0, baseScore - penalty);
-
-        let category, color, borderColor, recommendation;
-
-        if (redFlagsCount > 0) {
-          category = "❌ Не рекомендовано";
-          color = "var(--danger-color)";
-          borderColor = "var(--danger-color)";
-          recommendation = "Обнаружены критические дефекты";
-        } else if (finalScore >= 85) {
-          category = "✅ Отлично";
-          color = "var(--success-color)";
-          borderColor = "var(--success-color)";
-          recommendation = "Автомобиль в отличном состоянии";
-        } else if (finalScore >= 70) {
-          category = "⚠️ Хорошо";
-          color = "#5ac8fa";
-          borderColor = "#5ac8fa";
-          recommendation = "Есть мелкие замечания, уместен торг";
-        } else if (finalScore >= 50) {
-          category = "⚠️ Удовлетворительно";
-          color = "var(--warning-color)";
-          borderColor = "var(--warning-color)";
-          recommendation = "Требует вложений, серьезный торг";
-        } else {
-          category = "❌ Плохо";
-          color = "var(--danger-color)";
-          borderColor = "var(--danger-color)";
-          recommendation = "Много проблем, не рекомендовано";
-        }
-
-        return {
-          totalItems,
-          checkedItems,
-          redFlagsCount,
-          baseScore: Math.round(baseScore),
-          penalty,
-          finalScore: Math.round(finalScore),
-          category,
-          color,
-          borderColor,
-          recommendation,
-        };
-      }
-
-      // Управление темой
-      function setTheme(theme, btnElement) {
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem("checklist-theme", theme);
-        document
-          .querySelectorAll(".theme-btn")
-          .forEach((btn) => btn.classList.remove("active"));
-        if (btnElement) btnElement.classList.add("active");
-      }
-
-      const savedTheme = localStorage.getItem("checklist-theme") || "light";
-      document.documentElement.setAttribute("data-theme", savedTheme);
-      document.querySelectorAll(".theme-btn").forEach((btn) => {
-        if (
-          (savedTheme === "light" && btn.title.includes("Светлая")) ||
-          (savedTheme === "dark" && btn.title.includes("Темная")) ||
-          (savedTheme === "contrast" && btn.title.includes("Контрастная"))
-        ) {
-          btn.classList.add("active");
-        }
-      });
-
-      // Автосохранение текстовых полей
-      const inputs = document.querySelectorAll(
-        'input:not([type="file"]), textarea, select',
-      );
-      inputs.forEach((input) => {
-        input.addEventListener("input", () => {
-          localStorage.setItem(
-            "checklist_" + input.id,
-            input.type === "checkbox" ? input.checked : input.value,
-          );
         });
-        const saved = localStorage.getItem("checklist_" + input.id);
-        if (saved !== null) {
-          if (input.type === "checkbox") input.checked = saved === "true";
-          else input.value = saved;
-        }
       });
 
-      function generateReport() {
-        const model = document.getElementById("carModel").value || "Не указано";
-        const year = document.getElementById("carYear").value || "Не указано";
-        const vin = document.getElementById("carVin").value || "Не указано";
-        const adUrl = document.getElementById("adUrl").value || "Не указана";
-        const marketPrice = document.getElementById("marketPrice").value || "0";
-        const askedPrice = document.getElementById("askedPrice").value || "0";
-        const targetPrice =
-          document.getElementById("targetPrice").value || "Не указана";
-        const verdict = document.getElementById("verdict").value;
-        const critDefects =
-          document.getElementById("critDefects").value || "Не выявлено";
-        const minorDefects =
-          document.getElementById("minorDefects").value || "Не выявлено";
+      let redFlagsCount = 0;
+      for (let i = 1; i <= 5; i++) {
+        if (document.getElementById("rf" + i).checked) {
+          redFlagsCount++;
+        }
+      }
 
-        const score = calculateScore();
+      const baseScore =
+        totalItems > 0 ? (checkedItems / totalItems) * 100 : 0;
+      const penalty = redFlagsCount * 20;
+      let finalScore = Math.max(0, baseScore - penalty);
 
-        let html = `
+      let category, color, borderColor, recommendation;
+
+      if (redFlagsCount > 0) {
+        category = "❌ Не рекомендовано";
+        color = "var(--danger-color)";
+        borderColor = "var(--danger-color)";
+        recommendation = "Обнаружены критические дефекты";
+      } else if (finalScore >= 85) {
+        category = "✅ Отлично";
+        color = "var(--success-color)";
+        borderColor = "var(--success-color)";
+        recommendation = "Автомобиль в отличном состоянии";
+      } else if (finalScore >= 70) {
+        category = "⚠️ Хорошо";
+        color = "#5ac8fa";
+        borderColor = "#5ac8fa";
+        recommendation = "Есть мелкие замечания, уместен торг";
+      } else if (finalScore >= 50) {
+        category = "⚠️ Удовлетворительно";
+        color = "var(--warning-color)";
+        borderColor = "var(--warning-color)";
+        recommendation = "Требует вложений, серьезный торг";
+      } else {
+        category = "❌ Плохо";
+        color = "var(--danger-color)";
+        borderColor = "var(--danger-color)";
+        recommendation = "Много проблем, не рекомендовано";
+      }
+
+      return {
+        totalItems,
+        checkedItems,
+        redFlagsCount,
+        baseScore: Math.round(baseScore),
+        penalty,
+        finalScore: Math.round(finalScore),
+        category,
+        color,
+        borderColor,
+        recommendation,
+      };
+    }
+
+    // Управление темой
+    function setTheme(theme, btnElement) {
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("checklist-theme", theme);
+      document
+        .querySelectorAll(".theme-btn")
+        .forEach((btn) => btn.classList.remove("active"));
+      if (btnElement) btnElement.classList.add("active");
+    }
+
+    const savedTheme = localStorage.getItem("checklist-theme") || "light";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    document.querySelectorAll(".theme-btn").forEach((btn) => {
+      if (
+        (savedTheme === "light" && btn.title.includes("Светлая")) ||
+        (savedTheme === "dark" && btn.title.includes("Темная")) ||
+        (savedTheme === "contrast" && btn.title.includes("Контрастная"))
+      ) {
+        btn.classList.add("active");
+      }
+    });
+
+    // Автосохранение текстовых полей
+    const inputs = document.querySelectorAll(
+      'input:not([type="file"]), textarea, select',
+    );
+    inputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        localStorage.setItem(
+          "checklist_" + input.id,
+          input.type === "checkbox" ? input.checked : input.value,
+        );
+      });
+      const saved = localStorage.getItem("checklist_" + input.id);
+      if (saved !== null) {
+        if (input.type === "checkbox") input.checked = saved === "true";
+        else input.value = saved;
+      }
+    });
+
+    function generateReport() {
+      const model = document.getElementById("carModel").value || "Не указано";
+      const year = document.getElementById("carYear").value || "Не указано";
+      const vin = document.getElementById("carVin").value || "Не указано";
+      const adUrl = document.getElementById("adUrl").value || "Не указана";
+      const marketPrice = document.getElementById("marketPrice").value || "0";
+      const askedPrice = document.getElementById("askedPrice").value || "0";
+      const targetPrice =
+        document.getElementById("targetPrice").value || "Не указана";
+      const verdict = document.getElementById("verdict").value;
+      const critDefects =
+        document.getElementById("critDefects").value || "Не выявлено";
+      const minorDefects =
+        document.getElementById("minorDefects").value || "Не выявлено";
+
+      const score = calculateScore();
+
+      let html = `
             <div class="score-container" style="margin-bottom: 20px;">
                 <div class="score-circle" style="border-color: ${score.borderColor};">
                     <div class="score-value" style="color: ${score.color};">${score.finalScore}</div>
@@ -890,77 +896,77 @@
                 </div>
             </div>`;
 
-        html += `<div class="report-line"><span class="report-label">Автомобиль</span><div class="report-value">${model}, ${year} г.в. (VIN: ${vin})</div></div>`;
+      html += `<div class="report-line"><span class="report-label">Автомобиль</span><div class="report-value">${model}, ${year} г.в. (VIN: ${vin})</div></div>`;
 
-        if (adUrl !== "Не указана") {
-          html += `<div class="report-line"><span class="report-label">Ссылка на объявление</span><div class="report-value"><a href="${adUrl}" target="_blank" class="report-link">🔗 ${adUrl}</a></div></div>`;
-        }
+      if (adUrl !== "Не указана") {
+        html += `<div class="report-line"><span class="report-label">Ссылка на объявление</span><div class="report-value"><a href="${adUrl}" target="_blank" class="report-link">🔗 ${adUrl}</a></div></div>`;
+      }
 
-        html += `<div class="report-line"><span class="report-label">Цены</span><div class="report-value">Рынок: ${marketPrice} ₽ | Запрос: ${askedPrice} ₽ | Цель: ${targetPrice} ₽</div></div>`;
+      html += `<div class="report-line"><span class="report-label">Цены</span><div class="report-value">Рынок: ${marketPrice} ₽ | Запрос: ${askedPrice} ₽ | Цель: ${targetPrice} ₽</div></div>`;
 
-        html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Детальный чек-лист осмотра</span></div>`;
+      html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Детальный чек-лист осмотра</span></div>`;
 
-        blocksData.forEach((block, blockIndex) => {
-          html += `<div style="margin-top: 12px; font-weight: 600; font-size: 14px; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">${block.title}</div>`;
+      blocksData.forEach((block, blockIndex) => {
+        html += `<div style="margin-top: 12px; font-weight: 600; font-size: 14px; color: var(--accent-color); border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">${block.title}</div>`;
 
-          block.items.forEach((item, itemIndex) => {
-            const uniqueId = `chk_b${block.id}_i${itemIndex}`;
-            const checkbox = document.getElementById(uniqueId);
-            const isChecked = checkbox ? checkbox.checked : false;
-            const icon = isChecked ? "✅" : "⬜";
-            const color = isChecked
-              ? "var(--text-color)"
-              : "var(--text-secondary)";
-            html += `<div class="report-line" style="color: ${color}; font-size: 13px; padding-left: 4px; margin-top: 4px;">${icon} ${item}</div>`;
-          });
-
-          const comment = document.getElementById(`comment_${block.id}`).value;
-          if (comment && comment.trim()) {
-            html += `<div class="report-line" style="margin-top: 6px;"><span class="report-label">Комментарий:</span> <span style="color: var(--text-color);">${comment}</span></div>`;
-          }
-
-          if (window.blockPhotos[block.id]) {
-            html += `<div class="report-line" style="margin-top: 6px;"><span class="report-label">Прикрепленное фото:</span><br>
-                             <img src="${
-                               window.blockPhotos[block.id]
-                             }" class="report-photo"></div>`;
-          }
+        block.items.forEach((item, itemIndex) => {
+          const uniqueId = `chk_b${block.id}_i${itemIndex}`;
+          const checkbox = document.getElementById(uniqueId);
+          const isChecked = checkbox ? checkbox.checked : false;
+          const icon = isChecked ? "✅" : "⬜";
+          const color = isChecked
+            ? "var(--text-color)"
+            : "var(--text-secondary)";
+          html += `<div class="report-line" style="color: ${color}; font-size: 13px; padding-left: 4px; margin-top: 4px;">${icon} ${item}</div>`;
         });
 
-        html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Критические дефекты</span><div class="report-value" style="color: var(--danger-color);">${critDefects}</div></div>`;
-        html += `<div class="report-line"><span class="report-label">Незначительные дефекты</span><div class="report-value">${minorDefects}</div></div>`;
-
-        let redFlags = [];
-        for (let i = 1; i <= 5; i++) {
-          if (document.getElementById("rf" + i).checked) {
-            redFlags.push(
-              document.querySelector('label[for="rf' + i + '"]').innerText,
-            );
-          }
+        const comment = document.getElementById(`comment_${block.id}`).value;
+        if (comment && comment.trim()) {
+          html += `<div class="report-line" style="margin-top: 6px;"><span class="report-label">Комментарий:</span> <span style="color: var(--text-color);">${comment}</span></div>`;
         }
 
-        if (redFlags.length > 0) {
-          html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label" style="color: var(--danger-color);">⚠️ ОБНАРУЖЕНЫ КРАСНЫЕ ФЛАГИ</span><ul style="margin: 4px 0 10px 20px; color: var(--danger-color); font-size: 13px;">`;
-          redFlags.forEach((flag) => (html += `<li>${flag}</li>`));
-          html += `</ul></div>`;
-        } else {
-          html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Красные флаги</span><div class="report-value" style="color: var(--success-color);">Не обнаружены</div></div>`;
+        if (window.blockPhotos[block.id]) {
+          html += `<div class="report-line" style="margin-top: 6px;"><span class="report-label">Прикрепленное фото:</span><br>
+                             <img src="${window.blockPhotos[block.id]
+            }" class="report-photo"></div>`;
         }
+      });
 
-        html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Финальный вердикт</span><div class="report-value" style="font-weight: 700; font-size: 15px;">${verdict}</div></div>`;
-        html += `<div class="report-line" style="margin-top: 12px; font-size: 12px; color: var(--text-secondary);">Дата формирования: ${new Date().toLocaleDateString(
-          "ru-RU",
-        )} ${new Date().toLocaleTimeString("ru-RU", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}</div>`;
+      html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Критические дефекты</span><div class="report-value" style="color: var(--danger-color);">${critDefects}</div></div>`;
+      html += `<div class="report-line"><span class="report-label">Незначительные дефекты</span><div class="report-value">${minorDefects}</div></div>`;
 
-        document.getElementById("reportContent").innerHTML = html;
-        document.getElementById("result").style.display = "block";
-        document
-          .getElementById("result")
-          .scrollIntoView({ behavior: "smooth" });
+      let redFlags = [];
+      for (let i = 1; i <= 5; i++) {
+        if (document.getElementById("rf" + i).checked) {
+          redFlags.push(
+            document.querySelector('label[for="rf' + i + '"]').innerText,
+          );
+        }
       }
-    </script>
-  </body>
+
+      if (redFlags.length > 0) {
+        html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label" style="color: var(--danger-color);">⚠️ ОБНАРУЖЕНЫ КРАСНЫЕ ФЛАГИ</span><ul style="margin: 4px 0 10px 20px; color: var(--danger-color); font-size: 13px;">`;
+        redFlags.forEach((flag) => (html += `<li>${flag}</li>`));
+        html += `</ul></div>`;
+      } else {
+        html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Красные флаги</span><div class="report-value" style="color: var(--success-color);">Не обнаружены</div></div>`;
+      }
+
+      html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Финальный вердикт</span><div class="report-value" style="font-weight: 700; font-size: 15px;">${verdict}</div></div>`;
+      html += `<div class="report-line" style="margin-top: 12px; font-size: 12px; color: var(--text-secondary);">Дата формирования: ${new Date().toLocaleDateString(
+        "ru-RU",
+      )} ${new Date().toLocaleTimeString("ru-RU", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })}</div>`;
+
+      document.getElementById("reportContent").innerHTML = html;
+      document.getElementById("result").style.display = "block";
+      document
+        .getElementById("result")
+        .scrollIntoView({ behavior: "smooth" });
+    }
+  </script>
+</body>
+
 </html>
