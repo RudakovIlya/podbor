@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <title>Чек-лист подбора авто</title>
+    <style>
+      :root {
+        --bg-color: #f5f5f7;
+        --card-bg: #ffffff;
+        --text-color: #1d1d1f;
+        --text-secondary: #86868b;
+        --border-color: #d2d2d7;
+        --accent-color: #007aff;
+        --accent-text: #ffffff;
+        --danger-color: #ff3b30;
+        --success-color: #34c759;
+        --warning-color: #ff9500;
+        --safe-top: env(safe-area-inset-top, 20px);
+        --safe-bottom: env(safe-area-inset-bottom, 20px);
+      }
+
+      [data-theme="dark"] {
+        --bg-color: #000000;
+        --card-bg: #1c1c1e;
+        --text-color: #f5f5f7;
+        --text-secondary: #98989d;
+        --border-color: #38383a;
+        --accent-color: #0a84ff;
+      }
+
+      [data-theme="contrast"] {
+        --bg-color: #000000;
+        --card-bg: #000000;
+        --text-color: #ffffff;
+        --text-secondary: #ffff00;
+        --border-color: #ffffff;
+        --accent-color: #ffff00;
+        --accent-text: #000000;
+        --danger-color: #ff0000;
+        --success-color: #00ff00;
+        --warning-color: #ffff00;
+      }
+
+      * {
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        /* Увеличенный верхний отступ для предотвращения прилипания к краю/Dynamic Island */
+        padding: max(var(--safe-top), 24px) 12px calc(12px + var(--safe-bottom))
+          12px;
+        font-size: 15px;
+        line-height: 1.4;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      h1 {
+        font-size: 20px;
+        margin: 0;
+        font-weight: 600;
+      }
+
+      h2 {
+        font-size: 17px;
+        margin: 0 0 8px 0;
+        font-weight: 600;
+        color: var(--accent-color);
+      }
+
+      .theme-switcher {
+        display: flex;
+        gap: 8px;
+      }
+
+      .theme-btn {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+
+      .theme-btn.active {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        transform: scale(1.05);
+      }
+
+      .section {
+        background: var(--card-bg);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 12px;
+        border: 1px solid var(--border-color);
+      }
+
+      .form-group {
+        margin-bottom: 10px;
+      }
+
+      .form-group:last-child {
+        margin-bottom: 0;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 10px;
+        background: var(--bg-color);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--text-color);
+        font-size: 16px;
+        /* Предотвращает зум на iOS при фокусе */
+        font-family: inherit;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--accent-color);
+      }
+
+      .checkbox-group {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: var(--bg-color);
+        border-radius: 8px;
+        border: 1px solid transparent;
+      }
+
+      .checkbox-group:has(input:checked) {
+        border-color: var(--accent-color);
+      }
+
+      .checkbox-group input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        margin-right: 10px;
+        margin-top: 2px;
+        flex-shrink: 0;
+        accent-color: var(--accent-color);
+      }
+
+      .checkbox-group label {
+        margin: 0;
+        font-size: 14px;
+        color: var(--text-color);
+        cursor: pointer;
+        line-height: 1.3;
+      }
+
+      .block-comment {
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--border-color);
+      }
+
+      .red-flag {
+        color: var(--danger-color);
+        font-weight: 600;
+      }
+
+      .btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background-color: var(--accent-color);
+        color: var(--accent-text);
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 8px;
+        text-align: center;
+      }
+
+      .btn-secondary {
+        background-color: var(--card-bg);
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+      }
+
+      #result {
+        display: none;
+        background: var(--card-bg);
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        margin-top: 16px;
+      }
+
+      .report-line {
+        margin-bottom: 6px;
+        font-size: 14px;
+      }
+
+      .report-label {
+        color: var(--text-secondary);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+      }
+
+      .report-value {
+        font-weight: 500;
+        margin-bottom: 10px;
+      }
+
+      .source-note {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 20px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border-color);
+        line-height: 1.4;
+      }
+
+      .source-note a {
+        color: var(--accent-color);
+        text-decoration: none;
+      }
+
+      @media print {
+        .no-print {
+          display: none !important;
+        }
+
+        body {
+          background: #fff;
+          color: #000;
+          padding: 10px;
+        }
+
+        .section {
+          break-inside: avoid;
+          border: 1px solid #ccc;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="no-print">
+      <h1>🚗 Автоподбор</h1>
+      <div class="theme-switcher">
+        <button
+          class="theme-btn active"
+          onclick="setTheme('light', this)"
+          title="Светлая тема"
+        >
+          ☀️
+        </button>
+        <button
+          class="theme-btn"
+          onclick="setTheme('dark', this)"
+          title="Темная тема"
+        >
+          🌙
+        </button>
+        <button
+          class="theme-btn"
+          onclick="setTheme('contrast', this)"
+          title="Контрастная тема"
+        >
+          🌗
+        </button>
+      </div>
+    </header>
+
+    <div class="section">
+      <h2>Объект осмотра</h2>
+      <div class="form-group">
+        <label>Марка и Модель:</label
+        ><input
+          type="text"
+          id="carModel"
+          placeholder="Например: Toyota Camry"
+        />
+      </div>
+      <div class="form-group">
+        <label>Год выпуска:</label
+        ><input type="text" id="carYear" placeholder="2018" />
+      </div>
+      <div class="form-group">
+        <label>VIN / Номер кузова:</label><input type="text" id="carVin" />
+      </div>
+      <div class="form-group">
+        <label>Рыночная стоимость (₽):</label
+        ><input type="number" id="marketPrice" />
+      </div>
+      <div class="form-group">
+        <label>Запрашиваемая цена (₽):</label
+        ><input type="number" id="askedPrice" />
+      </div>
+    </div>
+
+    <!-- Блок 1 -->
+    <div class="section">
+      <h2>Блок 1. Встреча и Документы</h2>
+      <div class="checkbox-group">
+        <input type="checkbox" id="1.1" /><label for="1.1"
+          >1.1. Освещенность места осмотра достаточна (солнечный день / яркий
+          свет)</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="1.2" /><label for="1.2"
+          >1.2. ПТС/СТС на руках. VIN в ПТС совпадает с VIN в объявлении и
+          отчете</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="1.3" /><label for="1.3"
+          >1.3. ПТС оригинальный (или дубликат «в связи с окончанием
+          места»)</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="1.4" /><label for="1.4"
+          >1.4. Паспорт продавца совпадает с собственником в ПТС</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="1.5" /><label for="1.5"
+          >1.5. Проверка продавца по ФССП (нет критических долгов и
+          запретов)</label
+        >
+      </div>
+      <div class="block-comment">
+        <label>💬 Комментарий к блоку:</label>
+        <textarea
+          id="comment_1"
+          rows="2"
+          placeholder="Заметки по документам и встрече..."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Блок 2 -->
+    <div class="section">
+      <h2>Блок 2. Кузов и Внешний осмотр</h2>
+      <div class="checkbox-group">
+        <input type="checkbox" id="2.1" /><label for="2.1"
+          >2.1. Зазоры между кузовными панелями равномерные, нет перепадов
+          цвета</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="2.2" /><label for="2.2"
+          >2.2. Маркировка всех стекол совпадает по году и логотипу</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="2.3" /><label for="2.3"
+          >2.3. Толщина ЛКП по кузову в пределах 80-150 мкм (нет вторичных
+          окрасов)</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="2.4" /><label for="2.4"
+          >2.4. Болты крепления капота, крыльев, дверей не крашены, имеют
+          заводские метки</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="2.5" /><label for="2.5"
+          >2.5. Подкапотное пространство: стаканы, лонжероны без следов сварки и
+          деформаций</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="2.6" /><label for="2.6"
+          >2.6. Осмотр днища: нет кустарного антикора, битума, гнили</label
+        >
+      </div>
+      <div class="block-comment">
+        <label>💬 Комментарий к блоку:</label>
+        <textarea
+          id="comment_2"
+          rows="2"
+          placeholder="Заметки по кузову и ЛКП..."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Блок 3 -->
+    <div class="section">
+      <h2>Блок 3. Двигатель и Технические жидкости</h2>
+      <div class="checkbox-group">
+        <input type="checkbox" id="3.1" /><label for="3.1"
+          >3.1. Двигатель остывший («холодный»). Запуск прошел штатно, без
+          стуков</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="3.2" /><label for="3.2"
+          >3.2. Под капотом сухо. Нет следов герметика на стыках
+          агрегатов</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="3.3" /><label for="3.3"
+          >3.3. Масляный щуп: масло не черное, без запаха гари</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="3.4" /><label for="3.4"
+          >3.4. Под маслозаливной горловиной и на щупе нет рыжей эмульсии
+          (пены)</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="3.5" /><label for="3.5"
+          >3.5. Антифриз чистый, без масляной пленки, уровень в норме</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="3.6" /><label for="3.6"
+          >3.6. Патрубки эластичные, на заводских хомутах, без трещин</label
+        >
+      </div>
+      <div class="block-comment">
+        <label>💬 Комментарий к блоку:</label>
+        <textarea
+          id="comment_3"
+          rows="2"
+          placeholder="Заметки по двигателю и жидкостям..."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Блок 4 -->
+    <div class="section">
+      <h2>Блок 4. Электроника и OBD-диагностика</h2>
+      <div class="checkbox-group">
+        <input type="checkbox" id="4.1" /><label for="4.1"
+          >4.1. OBD-сканер подключился, VIN в блоках совпадает с кузовным</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="4.2" /><label for="4.2"
+          >4.2. Пробег в блоках ABS/АКПП совпадает с пробегом на щитке (нет
+          скрутки)</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="4.3" /><label for="4.3"
+          >4.3. Отсутствуют критические ошибки (Check Engine, подушки
+          безопасности)</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="4.4" /><label for="4.4"
+          >4.4. Работают все стеклоподъемники, кондиционер, свет,
+          климат-контроль</label
+        >
+      </div>
+      <div class="block-comment">
+        <label>💬 Комментарий к блоку:</label>
+        <textarea
+          id="comment_4"
+          rows="2"
+          placeholder="Заметки по электронике и сканеру..."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Блок 5 -->
+    <div class="section">
+      <h2>Блок 5. Тест-драйв и Ходовая часть</h2>
+      <div class="checkbox-group">
+        <input type="checkbox" id="5.1" /><label for="5.1"
+          >5.1. При разгоне и торможении АКПП/МКПП работает без рывков и
+          хрустов</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="5.2" /><label for="5.2"
+          >5.2. На скорости 100-110 км/ч машину не тянет в сторону, нет
+          вибрации</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="5.3" /><label for="5.3"
+          >5.3. При проезде неровностей в подвеске нет глухих стуков и
+          скрипов</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="5.4" /><label for="5.4"
+          >5.4. Рулевое колесо без люфта, при поворотах нет хруста
+          (ШРУСы/рейка)</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="5.5" /><label for="5.5"
+          >5.5. Тормоза схватывают равномерно, нет биения педали</label
+        >
+      </div>
+      <div class="block-comment">
+        <label>💬 Комментарий к блоку:</label>
+        <textarea
+          id="comment_5"
+          rows="2"
+          placeholder="Заметки по тест-драйву и ходовой..."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Блок 6 -->
+    <div class="section">
+      <h2>Блок 6. Салон</h2>
+      <div class="checkbox-group">
+        <input type="checkbox" id="6.1" /><label for="6.1"
+          >6.1. Состояние руля и педалей соответствует заявленному
+          пробегу</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="6.2" /><label for="6.2"
+          >6.2. В салоне нет запаха сырости, плесени или резкого запаха «химии»
+          (утоп)</label
+        >
+      </div>
+      <div class="block-comment">
+        <label>💬 Комментарий к блоку:</label>
+        <textarea
+          id="comment_6"
+          rows="2"
+          placeholder="Заметки по салону..."
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="red-flag">🚩 КРИТИЧЕСКИЕ ДЕФЕКТЫ (КРАСНЫЕ ФЛАГИ)</h2>
+      <p style="font-size: 13px; margin-top: 0; color: var(--text-secondary)">
+        Отметьте, если обнаружено (любой пункт — основание для отказа или
+        серьезного торга):
+      </p>
+      <div class="checkbox-group">
+        <input type="checkbox" id="rf1" /><label for="rf1"
+          >Силовой каркас: следы сварки, трещины или нарушенная геометрия
+          стоек/лонжеронов.</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="rf2" /><label for="rf2"
+          >Двигатель: эмульсия в масле, сизый дым, сильный картерный газ,
+          металлические стуки.</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="rf3" /><label for="rf3"
+          >Юридическая чистота: перебитый VIN, ПТС-дубликат "взамен утерянного"
+          у не-собственника, авто в залоге.</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="rf4" /><label for="rf4"
+          >Коробка передач: удары при переключении, запах гари масла АКПП,
+          стружка на щупе.</label
+        >
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="rf5" /><label for="rf5"
+          >Скрученный пробег: расхождение в блоках ABS/АКПП на 30%+ без
+          подтвержденной истории ремонта.</label
+        >
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Итоговая рекомендация</h2>
+      <div class="form-group">
+        <label>Выявленные критические дефекты:</label
+        ><textarea id="critDefects" rows="2"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Выявленные незначительные дефекты (требующие вложений):</label
+        ><textarea id="minorDefects" rows="2"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Финальный вердикт:</label>
+        <select id="verdict">
+          <option value="Не выбрано">-- Выберите вариант --</option>
+          <option
+            value="ПРИНЯТЬ РЕШЕНИЕ О ПОКУПКЕ после устранения неисправностей и снижения цены"
+          >
+            ПРИНЯТЬ РЕШЕНИЕ О ПОКУПКЕ после устранения неисправностей и снижения
+            цены
+          </option>
+          <option
+            value="ТОРГОВАТЬСЯ ДАЛЕЕ, дефекты не критичны, но требуют пересмотра бюджета"
+          >
+            ТОРГОВАТЬСЯ ДАЛЕЕ, дефекты не критичны, но требуют пересмотра
+            бюджета
+          </option>
+          <option
+            value="НЕ РЕКОМЕНДОВАН К ПОКУПКЕ (критические дефекты / юридические риски)"
+          >
+            НЕ РЕКОМЕНДОВАН К ПОКУПКЕ (критические дефекты / юридические риски)
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Целевая цена после торга (₽):</label
+        ><input type="number" id="targetPrice" />
+      </div>
+    </div>
+
+    <div class="no-print">
+      <button class="btn" onclick="generateReport()">Сформировать отчет</button>
+      <button class="btn btn-secondary" onclick="window.print()">
+        Печать / Сохранить в PDF
+      </button>
+    </div>
+
+    <div id="result" class="section">
+      <h2>Итоговый отчет</h2>
+      <div id="reportContent"></div>
+    </div>
+
+    <div class="source-note">
+      <strong>Источники и методология:</strong> Данный чек-лист сформирован
+      исключительно на основе предоставленного документа «qwen-автоподбор.md».
+      Упомянутые официальные источники для самостоятельной проверки:
+      <ul style="padding-left: 20px; margin: 6px 0">
+        <li>
+          ГИБДД РФ (проверка ДТП, владельцев, запретов):
+          <a href="https://гибдд.рф" target="_blank">гибдд.рф</a>
+        </li>
+        <li>
+          ФССП (проверка продавца на долги):
+          <a href="https://fssp.gov.ru" target="_blank">fssp.gov.ru</a>
+        </li>
+        <li>
+          Реестр уведомлений о залоге движимого имущества (ФНП):
+          <a href="https://reestr-zalogov.ru" target="_blank"
+            >reestr-zalogov.ru</a
+          >
+        </li>
+      </ul>
+      Числовые значения (толщина ЛКП 80–150 мкм, японцы 90–110 мкм, VAG 120–150
+      мкм, вторичный окрас от 180 мкм, шпаклевка от 300-400 мкм) взяты из
+      раздела 4 предоставленного конспекта, основанного на справочных таблицах
+      толщиномеров (например, ЕТ111).
+    </div>
+
+    <script>
+      // Управление темой
+      function setTheme(theme, btnElement) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("checklist-theme", theme);
+        document
+          .querySelectorAll(".theme-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        if (btnElement) {
+          btnElement.classList.add("active");
+        }
+      }
+
+      // Загрузка сохраненной темы при старте
+      const savedTheme = localStorage.getItem("checklist-theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+      document.querySelectorAll(".theme-btn").forEach((btn) => {
+        if (
+          (savedTheme === "light" && btn.title.includes("Светлая")) ||
+          (savedTheme === "dark" && btn.title.includes("Темная")) ||
+          (savedTheme === "contrast" && btn.title.includes("Контрастная"))
+        ) {
+          btn.classList.add("active");
+        }
+      });
+
+      // Автосохранение данных формы
+      const inputs = document.querySelectorAll("input, textarea, select");
+      inputs.forEach((input) => {
+        input.addEventListener("input", () => {
+          localStorage.setItem(
+            "checklist_" + input.id,
+            input.type === "checkbox" ? input.checked : input.value,
+          );
+        });
+
+        const saved = localStorage.getItem("checklist_" + input.id);
+        if (saved !== null) {
+          if (input.type === "checkbox") {
+            input.checked = saved === "true";
+          } else {
+            input.value = saved;
+          }
+        }
+      });
+
+      function generateReport() {
+        const model = document.getElementById("carModel").value || "Не указано";
+        const year = document.getElementById("carYear").value || "Не указано";
+        const vin = document.getElementById("carVin").value || "Не указано";
+        const marketPrice = document.getElementById("marketPrice").value || "0";
+        const askedPrice = document.getElementById("askedPrice").value || "0";
+        const targetPrice =
+          document.getElementById("targetPrice").value || "Не указана";
+        const verdict = document.getElementById("verdict").value;
+        const critDefects =
+          document.getElementById("critDefects").value || "Не выявлено";
+        const minorDefects =
+          document.getElementById("minorDefects").value || "Не выявлено";
+
+        let blockComments = "";
+        for (let i = 1; i <= 6; i++) {
+          const comment = document.getElementById("comment_" + i).value;
+          if (comment.trim()) {
+            blockComments += `<div class="report-line"><span class="report-label">Блок ${i}:</span> ${comment}</div>`;
+          }
+        }
+
+        let html = `<div class="report-line"><span class="report-label">Автомобиль</span><div class="report-value">${model}, ${year} г.в. (VIN: ${vin})</div></div>`;
+        html += `<div class="report-line"><span class="report-label">Цены</span><div class="report-value">Рынок: ${marketPrice} ₽ | Запрос: ${askedPrice} ₽ | Цель: ${targetPrice} ₽</div></div>`;
+
+        if (blockComments) {
+          html += `<div class="report-line"><span class="report-label">Комментарии по блокам</span><div class="report-value">${blockComments}</div></div>`;
+        }
+
+        // Детальный вывод всех пунктов чек-листа
+        html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Детальный чек-лист осмотра</span></div>`;
+        const blocks = [
+          {
+            title: "Блок 1. Встреча и Документы",
+            ids: ["1.1", "1.2", "1.3", "1.4", "1.5"],
+          },
+          {
+            title: "Блок 2. Кузов и Внешний осмотр",
+            ids: ["2.1", "2.2", "2.3", "2.4", "2.5", "2.6"],
+          },
+          {
+            title: "Блок 3. Двигатель и Технические жидкости",
+            ids: ["3.1", "3.2", "3.3", "3.4", "3.5", "3.6"],
+          },
+          {
+            title: "Блок 4. Электроника и OBD-диагностика",
+            ids: ["4.1", "4.2", "4.3", "4.4"],
+          },
+          {
+            title: "Блок 5. Тест-драйв и Ходовая часть",
+            ids: ["5.1", "5.2", "5.3", "5.4", "5.5"],
+          },
+          { title: "Блок 6. Салон", ids: ["6.1", "6.2"] },
+        ];
+
+        blocks.forEach((block) => {
+          html += `<div style="margin-top: 10px; font-weight: 600; font-size: 13px; color: var(--accent-color);">${block.title}</div>`;
+          block.ids.forEach((id) => {
+            const checkbox = document.getElementById(id);
+            const label = document.querySelector(
+              `label[for="${id}"]`,
+            ).innerText;
+            const isChecked = checkbox.checked;
+            const icon = isChecked ? "✅" : "⬜";
+            const color = isChecked
+              ? "var(--text-color)"
+              : "var(--text-secondary)";
+            html += `<div class="report-line" style="color: ${color}; font-size: 13px; padding-left: 4px;">${icon} ${label}</div>`;
+          });
+        });
+
+        html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Критические дефекты</span><div class="report-value" style="color: var(--danger-color);">${critDefects}</div></div>`;
+        html += `<div class="report-line"><span class="report-label">Незначительные дефекты</span><div class="report-value">${minorDefects}</div></div>`;
+
+        let redFlags = [];
+        for (let i = 1; i <= 5; i++) {
+          if (document.getElementById("rf" + i).checked) {
+            redFlags.push(
+              document.querySelector('label[for="rf' + i + '"]').innerText,
+            );
+          }
+        }
+
+        if (redFlags.length > 0) {
+          html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label" style="color: var(--danger-color);">⚠️ ОБНАРУЖЕНЫ КРАСНЫЕ ФЛАГИ</span><ul style="margin: 4px 0 10px 20px; color: var(--danger-color); font-size: 13px;">`;
+          redFlags.forEach((flag) => (html += `<li>${flag}</li>`));
+          html += `</ul></div>`;
+        } else {
+          html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Красные флаги</span><div class="report-value" style="color: var(--success-color);">Не обнаружены</div></div>`;
+        }
+
+        html += `<div class="report-line" style="margin-top: 12px;"><span class="report-label">Финальный вердикт</span><div class="report-value" style="font-weight: 700; font-size: 15px;">${verdict}</div></div>`;
+        html += `<div class="report-line" style="margin-top: 12px; font-size: 12px; color: var(--text-secondary);">Дата формирования: ${new Date().toLocaleDateString(
+          "ru-RU",
+        )} ${new Date().toLocaleTimeString("ru-RU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}</div>`;
+
+        document.getElementById("reportContent").innerHTML = html;
+        document.getElementById("result").style.display = "block";
+        document
+          .getElementById("result")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
